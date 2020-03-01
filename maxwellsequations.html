@@ -82,7 +82,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // can move around the planets more easily.
       // solarSystem.scale = [0.1, 0.1, 0.1];
       // scene.addNode(solarSystem);
-      scene.addNode();
       // Still adding a skybox, but only for the benefit of the inline view.
       let skybox = new SkyboxNode({url: 'media/textures/milky-way-4k.png'});
       scene.addNode(skybox);
@@ -281,7 +280,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       // Called every time a XRSession requests that a new frame be drawn.
-      function onXRFrame(t, frame) {
+      function onXRFrame(time, frame) {
         let session = frame.session;
         let refSpace = session.isImmersive ?
                          xrImmersiveRefSpace :
