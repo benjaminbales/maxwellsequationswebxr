@@ -70,6 +70,7 @@ export class Gltf2Loader {
   }
 
   loadFromUrl(url) {
+    console.log("loading from url");
     return fetch(url)
         .then((response) => {
           let i = url.lastIndexOf('/');
@@ -125,6 +126,7 @@ export class Gltf2Loader {
   }
 
   loadFromJson(json, baseUrl, binaryChunk) {
+    console.log("loading from json");
     if (!json.asset) {
       throw new Error('Missing asset description.');
     }
@@ -154,7 +156,7 @@ export class Gltf2Loader {
       }
     }
 
-    let  textures = [];
+    let textures = [];
     if (json.textures) {
       for (let texture of json.textures) {
         let image = images[texture.source];
