@@ -90,6 +90,7 @@ export class Gltf2Loader {
   }
 
   loadFromBinary(arrayBuffer, baseUrl) {
+    console.log("loading from binary");
     let headerView = new DataView(arrayBuffer, 0, 12);
     let magic = headerView.getUint32(0, true);
     let version = headerView.getUint32(4, true);
@@ -153,7 +154,7 @@ export class Gltf2Loader {
       }
     }
 
-    let textures = [];
+    let  textures = [];
     if (json.textures) {
       for (let texture of json.textures) {
         let image = images[texture.source];
