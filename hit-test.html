@@ -67,11 +67,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       arObject.visible = false;
       scene.addNode(arObject);
 
-      let flower = new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.gltf'});
-      // let flower = new Gltf2Node({url: 'media/gltf/stereo/stereo.gltf'});
+      let flower = new Gltf2Node({url: 'media/gltf/sphericalshell/1/sunflower.glb'});
       arObject.addNode(flower);
-      // console.log("Flower " + flower.);
-      // console.log("arObject " + arObject);
 
       let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
       reticle.visible = false;
