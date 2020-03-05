@@ -242,10 +242,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // If we have a hit test source, get its results for the frame
         // and use the pose to display a reticle in the scene.
         if (xrHitTestSource && pose) {
-          console.log("xrHitTestSource" + xrHitTestSource);
+          // console.log("xrHitTestSource" + xrHitTestSource);
           let hitTestResults = frame.getHitTestResults(xrHitTestSource);
-          console.log("hitTestResults" + hitTestResults);
+          // console.log("hitTestResults" + hitTestResults);
           if (hitTestResults.length > 0) {
+            console.log("hitTestResults[0]" + hitTestResults[0]);
           // if (hitTestResults.length > 0 && hitTestResults[0].) {
             let pose = hitTestResults[0].getPose(xrRefSpace);
             reticle.visible = true;
