@@ -167,7 +167,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       function addARObjectAt(matrix) {
         let newSphericalShell = sphericalshell.clone();
         newSphericalShell.visible = true;
-        newSphericalShell.matrix = matrix;
+
+        let rotMatrix = mat4.create();
+        mat4.rotateY(rotMatrix, matrix, Math.PI/2);
+        console.log("rotMatrix" + rotMatrix);
+        newSphericalShell.matrix = rotMatrix;
         scene.addNode(newSphericalShell);
 
         sphericalshells.push(newSphericalShell);
@@ -182,7 +186,6 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         console.log("matrix" + matrix);
         console.log("newMatrix" + newMatrix);
         newCircularPlate.matrix = newMatrix;
-        // newCircularPlate.matrix = matrix;
         scene.addNode(newCircularPlate);
 
         circularplates.push(newCircularPlate);
