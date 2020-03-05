@@ -233,20 +233,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       function onSelectStart(ev) {
-        let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
-        if (!targetRayPose) {
-          return;
-        }
+        // let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
+        // if (!targetRayPose) {
+        //   return;
+        // }
 
-        let hitResult = scene.hitTest(targetRayPose.transform);
-        if (hitResult) {
-          // Check to see if the hit result was one of our boxes.
-          for (let sp of sphericalshells) {
-            if (hitResult.node == sp) {
-              console.log("sphericalshell onSelectStart");
-            }
-          }
-        }
+        // let hitResult = scene.hitTest(targetRayPose.transform);
+        // if (hitResult) {
+        //   // Check to see if the hit result was one of our boxes.
+        //   for (let sp of sphericalshells) {
+        //     if (hitResult.node == sp) {
+        //       console.log("sphericalshell onSelectStart");
+        //       let newmtrx = mat4.create();
+        //       mat4.rotateY(newmtrx, sp.matrix, Math.PI);
+        //     }
+        //   }
+        // }
       }
 
       // Called every time a XRSession requests that a new frame be drawn.
@@ -263,9 +265,20 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           let hitTestResults = frame.getHitTestResults(xrHitTestSource);
           // console.log("hitTestResults" + hitTestResults);
           if (hitTestResults.length > 0) {
-            console.log("hitTestResults[0]" + hitTestResults[0]);
-          // if (hitTestResults.length > 0 && hitTestResults[0].) {
+            for(let sp of sphericalshells){
+              if(hitTestResults[0] == sp){
+                console.log("spherical shell is hitTestResults[0]");
+              }
+            }
+
+            for(let cp of circularplates){
+              if(hitTestResults[0] == cp){
+                console.log("circular plate is hitTestResults[0]");
+              }
+            }
+
             let pose = hitTestResults[0].getPose(xrRefSpace);
+
             reticle.visible = true;
             reticle.matrix = pose.transform.matrix;
           }
