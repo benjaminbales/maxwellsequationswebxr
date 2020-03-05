@@ -123,6 +123,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       function onSessionStarted(session) {
         session.addEventListener('end', onSessionEnded);
         session.addEventListener('select', onSelect);
+        session.addEventListener('selectstart', onSelectStart);
+
 
         if (!gl) {
           gl = createWebGLContext({
@@ -227,8 +229,27 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           // so we can just use it's matrix to save an unnecessary call to 
           // event.frame.getHitTestResults.
           addARObjectAt(reticle.matrix);
-        }else{
+        }
+      }
 
+      function onSelectStart(ev) {
+        // console.log("selectstart " + currently_selected_boxes);
+        let refSpace = ev.frame.session.isImmersive ?
+                         xrImmersiveRefSpace :
+                         inlineViewerHelper.referenceSpace;
+        let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, refSpace);
+        if (!targetRayPose) {
+          return;
+        }
+
+        let hitResult = scene.hitTest(targetRayPose.transform);
+        if (hitResult) {
+          // Check to see if the hit result was one of our boxes.
+          for (let sp of sphericalshells) {
+            if (hitResult.node == sp) {
+              console.log("sphericalshell onSelectStart");
+            }
+          }
         }
       }
 
