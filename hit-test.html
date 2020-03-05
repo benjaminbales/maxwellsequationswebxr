@@ -169,6 +169,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       function addARObjectAt(matrix) {
         let newSphericalShell = sphericalshell.clone();
         newSphericalShell.visible = true;
+        newSphericalShell.selectable = true;
 
         let rotMatrix = mat4.create();
         mat4.rotateY(rotMatrix, matrix, Math.PI/2);
@@ -180,6 +181,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         let newCircularPlate = circularplate.clone();
         newCircularPlate.visible = true;
+        newCircularPlate.selectable = true;  //not sure if this is necessary b/c of .clone
 
         let newMatrix = mat4.create();
         // mat4.translate(newMatrix, matrix, vec3.fromValues(0, 1, -1));
@@ -225,6 +227,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           // so we can just use it's matrix to save an unnecessary call to 
           // event.frame.getHitTestResults.
           addARObjectAt(reticle.matrix);
+        }else{
+
         }
       }
 
@@ -238,8 +242,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // If we have a hit test source, get its results for the frame
         // and use the pose to display a reticle in the scene.
         if (xrHitTestSource && pose) {
+          console.log("xrHitTestSource" + xrHitTestSource);
           let hitTestResults = frame.getHitTestResults(xrHitTestSource);
+          console.log("hitTestResults" + hitTestResults);
           if (hitTestResults.length > 0) {
+          // if (hitTestResults.length > 0 && hitTestResults[0].) {
             let pose = hitTestResults[0].getPose(xrRefSpace);
             reticle.visible = true;
             reticle.matrix = pose.transform.matrix;
