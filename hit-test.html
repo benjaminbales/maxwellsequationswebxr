@@ -66,11 +66,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       let sphericalshell = new Node();
       sphericalshell.visible = false;
+      sphericalshell.selectable = true;
       sphericalshell.addNode(new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'}));
       scene.addNode(sphericalshell);
 
       let circularplate = new Node();
       circularplate.visible = false;
+      circularplate.selectable = true;
       circularplate.addNode(new Gltf2Node({url: 'media/gltf/circularplate/circularplate.glb'}));
       scene.addNode(circularplate);
 
@@ -245,7 +247,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
 
         rotateARObjects(Math.PI/100);
-        
+
         scene.startFrame();
 
         session.requestAnimationFrame(onXRFrame);
