@@ -204,6 +204,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         }
       }
 
+      //rotate objects in scene by angle in radians
+      function rotateARObjects(rad) {
+        for(var sp of sphericalshells){
+          mat4.rotateY(sp.matrix, sp.matrix, rad);
+        }
+        for(var cp of circularplates){
+          mat4.rotateY(cp.matrix, cp.matrix, rad);
+          //may need to add separate assignment statement
+        }
+      }
+
       let rayOrigin = vec3.create();
       let rayDirection = vec3.create();
       function onSelect(event) {
@@ -233,6 +244,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           }
         }
 
+        rotateARObjects(Math.PI/100);
+        
         scene.startFrame();
 
         session.requestAnimationFrame(onXRFrame);
