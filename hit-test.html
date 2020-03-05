@@ -63,12 +63,15 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       let scene = new Scene();
       scene.enableStats(false);
 
-      let arObject = new Node();
-      arObject.visible = false;
-      scene.addNode(arObject);
+      let sphericalshell = new Node();
+      sphericalshell.visible = false;
+      sphericalshell.addNode(new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'}));
+      scene.addNode(sphericalshell);
 
-      let flower = new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'});
-      arObject.addNode(flower);
+      let circularplate = new Node();
+      circularplate.visible = false;
+      circularplate.addNode(new Gltf2Node({url: 'media/gltf/circularplate/circularplate.glb'}));
+      scene.addNode(circularplate);
 
       let reticle = new Gltf2Node({url: 'media/gltf/reticle/reticle.gltf'});
       reticle.visible = false;
@@ -78,10 +81,12 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // it in the world without adding much complexity.
       let shadow = new DropShadowNode();
       vec3.set(shadow.scale, 0.15, 0.15, 0.15);
-      arObject.addNode(shadow);
+      sphericalshell.addNode(shadow);
+      circularplate.addNode(shadow);
 
-      const MAX_FLOWERS = 30;
-      let flowers = [];
+      const MAX_OBJECTS = 15;
+      let sphericalshells = [];
+      let circularplates = [];
 
       // Ensure the background is transparent for AR.
       scene.clear = false;
@@ -159,19 +164,31 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       // Adds a new object to the scene at the
       // specificed transform.
       function addARObjectAt(matrix) {
-        let newFlower = arObject.clone();
-        newFlower.visible = true;
-        newFlower.matrix = matrix;
-        scene.addNode(newFlower);
+        let newSphericalShell = sphericalshell.clone();
+        newSphericalShell.visible = true;
+        newSphericalShell.matrix = matrix;
+        scene.addNode(newSphericalShell);
 
-        flowers.push(newFlower);
+        sphericalshells.push(newSphericalShell);
+
+        let newCircularPlate = circularplate.clone();
+        newCircularPlate.visible = true;
+        newCircularPlate.matrix = matrix;
+        scene.addNode(newCircularPlate);
+
+        circularplates.push(newCircularPlate);
 
         // For performance reasons if we add too many objects start
         // removing the oldest ones to keep the scene complexity
         // from growing too much.
-        if (flowers.length > MAX_FLOWERS) {
-          let oldFlower = flowers.shift();
-          scene.removeNode(oldFlower);
+        if (sphericalshells.length > MAX_OBJECTS) {
+          let oldSphericalShell = sphericalshells.shift();
+          scene.removeNode(oldSphericalShell);
+        }
+
+        if (circularplates.length > MAX_OBJECTS) {
+          let oldCircularPlate = circularplates.shift();
+          scene.removeNode(oldCircularPlate);
         }
       }
 
