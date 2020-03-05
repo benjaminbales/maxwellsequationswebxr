@@ -256,32 +256,41 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         let session = frame.session;
         let pose = frame.getViewerPose(xrRefSpace);
 
+        // let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
+        // if (!targetRayPose) {
+        //   return;
+        // }
+
         reticle.visible = false;
 
         // If we have a hit test source, get its results for the frame
         // and use the pose to display a reticle in the scene.
         if (xrHitTestSource && pose) {
-          // console.log("xrHitTestSource" + xrHitTestSource);
-          let hitTestResults = frame.getHitTestResults(xrHitTestSource);
-          // console.log("hitTestResults" + hitTestResults);
-          if (hitTestResults.length > 0) {
-            for(let sp of sphericalshells){
-              if(hitTestResults[0].node == sp){
-                console.log("spherical shell is hitTestResults[0]");
+          // let hitTestResults = frame.getHitTestResults(xrHitTestSource);
+          let hitResult = scene.hitTest(pose.transform);
+          if (hitResult) {
+            let objectHit = false;
+            // Check to see if the hit result was one of our boxes.
+            for (let sp of sphericalshells) {
+              if (hitResult.node == sp) {
+                console.log("sphericalshell onXRFrame");
+                objectHit = true;
               }
             }
 
-            for(let cp of circularplates){
-              if(hitTestResults[0].node == cp){
-                console.log("circular plate is hitTestResults[0]");
-              }
+            if(!objectHit){
+              reticle.visible = true;
+              reticle.matrix = pose.transform.matrix;
             }
-
-            let pose = hitTestResults[0].getPose(xrRefSpace);
-
-            reticle.visible = true;
-            reticle.matrix = pose.transform.matrix;
           }
+          // if (hitTestResults.length > 0) {
+
+
+          //   let pose = hitTestResults[0].getPose(xrRefSpace);
+
+          //   reticle.visible = true;
+          //   reticle.matrix = pose.transform.matrix;
+          // }
         }
 
         rotateARObjects(Math.PI/100);
