@@ -233,11 +233,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       function onSelectStart(ev) {
-        // console.log("selectstart " + currently_selected_boxes);
-        let refSpace = ev.frame.session.isImmersive ?
-                         xrImmersiveRefSpace :
-                         inlineViewerHelper.referenceSpace;
-        let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, refSpace);
+        let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
         if (!targetRayPose) {
           return;
         }
