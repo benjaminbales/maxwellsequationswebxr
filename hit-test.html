@@ -176,7 +176,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         newCircularPlate.visible = true;
 
         let newMatrix = mat4.create();
-        mat4.translate(newMatrix, matrix, vec3.fromValues(0, 5, -5));
+        mat4.translate(newMatrix, matrix, vec3.fromValues(0, 1, -1));
         newCircularPlate.matrix = newMatrix;
         // newCircularPlate.matrix = matrix;
         scene.addNode(newCircularPlate);
