@@ -234,22 +234,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       function onSelectStart(ev) {
-        // let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
-        // if (!targetRayPose) {
-        //   return;
-        // }
+        let targetRayPose = ev.frame.getPose(ev.inputSource.targetRaySpace, xrRefSpace);
+        if (!targetRayPose) {
+          return;
+        }
 
-        // let hitResult = scene.hitTest(targetRayPose.transform);
-        // if (hitResult) {
-        //   // Check to see if the hit result was one of our boxes.
-        //   for (let sp of sphericalshells) {
-        //     if (hitResult.node == sp) {
-        //       console.log("sphericalshell onSelectStart");
-        //       let newmtrx = mat4.create();
-        //       mat4.rotateY(newmtrx, sp.matrix, Math.PI);
-        //     }
-        //   }
-        // }
+        let hitResult = scene.hitTest(targetRayPose.transform);
+        if (hitResult) {
+          // Check to see if the hit result was one of our boxes.
+          for (let sp of sphericalshells) {
+            if (hitResult.node == sp) {
+              console.log("sphericalshell onSelectStart");
+              let newmtrx = mat4.create();
+              mat4.rotateY(newmtrx, sp.matrix, Math.PI);
+            }
+          }
+        }
       }
 
       // Called every time a XRSession requests that a new frame be drawn.
@@ -267,33 +267,35 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // If we have a hit test source, get its results for the frame
         // and use the pose to display a reticle in the scene.
         if (xrHitTestSource && pose) {
-          // let hitTestResults = frame.getHitTestResults(xrHitTestSource);
-          let hitResult = scene.hitTest(pose.transform);
-          console.log("hitResult" + hitResult);
-          if (hitResult) {
-            console.log("hitResult is not null");
-            let objectHit = false;
-            // Check to see if the hit result was one of our boxes.
-            for (let sp of sphericalshells) {
-              if (hitResult.node == sp) {
-                console.log("sphericalshell onXRFrame");
-                objectHit = true;
-              }
-              console.log("no match");
-            }
 
-            if(!objectHit){
-              reticle.visible = true;
-              reticle.matrix = pose.transform.matrix;
-            }
+          let hitTestResults = frame.getHitTestResults(xrHitTestSource);
+
+          if (hitTestResults.length > 0) {
+            let pose = hitTestResults[0].getPose(xrRefSpace);
+            reticle.visible = true;
+            reticle.matrix = pose.transform.matrix;
           }
+
+          // let hitResult = scene.hitTest(pose.transform);
+
           // if (hitTestResults.length > 0) {
-
-
+          //   console.log("hitTestResults are not null");
           //   let pose = hitTestResults[0].getPose(xrRefSpace);
+          //   let objectHit = false;
+          //   // Check to see if the hit result was one of our boxes.
+          //   for (let sp of sphericalshells) {
+          //     if (.node == sp) {
+          //       console.log("sphericalshell");
+          //       objectHit = true;
+          //     }else{
+          //       console.log("!sphericalshell");
+          //     }
+          //   }
 
-          //   reticle.visible = true;
-          //   reticle.matrix = pose.transform.matrix;
+          //   if(!objectHit){
+          //     reticle.visible = true;
+          //     reticle.matrix = pose.transform.matrix;
+          //   }
           // }
         }
 
