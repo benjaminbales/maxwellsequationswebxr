@@ -49,7 +49,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       import {Renderer, createWebGLContext} from './js/render/core/renderer.js';
       import {SkyboxNode} from './js/render/nodes/skybox.js';
       import {InlineViewerHelper} from './js/util/inline-viewer-helper.js';
-      import {Gltf2Node} from './js/render/nodes/gltf2.js';
+      // Third Party Imports
+      import * as THREE from './js/third-party/three.js/build/three.module.js';
+      import {Gltf2Node} from './js/render/nodes/gltf2.js' ;
       import {QueryArgs} from './js/util/query-args.js';
       import {BoxBuilder} from './js/render/geometry/box-builder.js';
       import {PbrMaterial} from './js/render/materials/pbr.js';
@@ -83,15 +85,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       sphericalshell.addNode(new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'}));
       scene.addNode(sphericalshell);
 
-      let reticle = new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'});
+      let probeaxis = new Node();
+      probeaxis.visible = false;
+      // probeaxis.selectable = true;
+      probeaxis.addNode(new Gltf2Node({url: 'media/gltf/probeaxis/probeaxis.glb'}));
+      scene.addNode(probeaxis);
+      // // sphericalshell.addNode(probeaxis);
+
+      // let reticle = new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'});
+      let reticle = new Gltf2Node({url: 'media/gltf/probeaxis/probeaxis.glb'});
       reticle.visible = false;
       scene.addNode(reticle);
 
       // Having a really simple drop shadow underneath an object helps ground
       // it in the world without adding much complexity.
-      let shadow = new DropShadowNode();
-      vec3.set(shadow.scale, 0.15, 0.15, 0.15);
-      sphericalshell.addNode(shadow);
+      // let shadow = new DropShadowNode();
+      // vec3.set(shadow.scale, 0.15, 0.15, 0.15);
+      // sphericalshell.addNode(shadow);
 
       let currentlySelectedObjects = [null, null];
       let currentlyGrabbedObjects = [null, null];
@@ -152,8 +162,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         scene.setRenderer(renderer);
       }
 
-      // Adds a new object to the scene at the
-      // specificed transform.
+      // Adds a new object to the scene at the specificed transform.
       function addARObjectAt(matrix) {
         let newSphericalShell = sphericalshell.clone();
         newSphericalShell.visible = true;
@@ -169,6 +178,21 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           reticle.visible = false;
         }
       }
+
+      // // draw a dashed line to represent coordinate axes
+      // function drawLine(){
+      //   //TODO: make it white
+      //   var material = new THREE.LineDashedMaterial( { color: 0x00ff00 } ); // green
+
+      //   var points = [];
+      //   points.push( new THREE.Vector3( - 10, 0, 0 ) );
+      //   points.push( new THREE.Vector3( 0, 10, 0 ) );
+      //   points.push( new THREE.Vector3( 10, 0, 0 ) );
+
+      //   var geometry = new THREE.BufferGeometry().setFromPoints( points );
+      //   var line = new THREE.Line( geometry, material );
+      //   scene.addNode( line );
+      // }
 
       function onSessionStarted(session) {
 
@@ -231,7 +255,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
               if (hitResult.node == sp && !sp.grabbed) {
                 let i = (ev.inputSource.handedness == "left") ? 0 : 1;
                 currentlyGrabbedObjects[i] = sp;
-                sp.scale = [0.1, 0.1, 0.1];
+                // sp.scale = [0.1, 0.1, 0.1];
                 // sp.originalTrans = sp.translation;
                 sp.grabbed = true;
                 grabDistance = vec3.length(sp.translation);
@@ -258,7 +282,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           console.log("Selectend " + currentlyGrabbedObject);
           if (currentlyGrabbedObject != null && currentlyGrabbedObject.grabbed) {
             currentlyGrabbedObject.grabbed = false;
-            currentlyGrabbedObject.scale = [1, 1, 1];
+            // currentlyGrabbedObject.scale = [1, 1, 1];
             currentlyGrabbedObjects[i] = null;
           }
         }
@@ -328,6 +352,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         session.requestAnimationFrame(onXRFrame);
 
         handleInputs(frame, xrRefSpace);
+
+        // drawLine();
 
         // In this sample and most samples after it we'll use a helper function
         // to automatically add the right meshes for the session's input sources
