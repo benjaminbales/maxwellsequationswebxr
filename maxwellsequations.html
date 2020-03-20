@@ -79,21 +79,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       let scene = new Scene();
       scene.enableStats(false);
 
+      let greencube = new Node();
+      greencube.visible = true;
+      greencube.selectable = true;
+      greencube.addNode(new Gltf2Node({url: 'media/gltf/greencube/greencube.glb'}));
+      greencube.scale = [0.5, 0.5, 0.5];
+      greencube.translation = [0, 1, 0];
+
       let sphericalshell = new Node();
       sphericalshell.visible = false;
       sphericalshell.selectable = true;
       sphericalshell.addNode(new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'}));
+      sphericalshell.addNode(greencube);
       scene.addNode(sphericalshell);
 
-      let probeaxis = new Node();
-      probeaxis.visible = false;
-      // probeaxis.selectable = true;
-      probeaxis.addNode(new Gltf2Node({url: 'media/gltf/probeaxis/probeaxis.glb'}));
-      scene.addNode(probeaxis);
-      // // sphericalshell.addNode(probeaxis);
 
-      // let reticle = new Gltf2Node({url: 'media/gltf/sphericalshell/sphericalshell.glb'});
-      let reticle = new Gltf2Node({url: 'media/gltf/probeaxis/probeaxis.glb'});
+
+      let reticle = new Gltf2Node({url: 'media/gltf/greencube/greencube.glb'});
       reticle.visible = false;
       scene.addNode(reticle);
 
@@ -164,17 +166,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       // Adds a new object to the scene at the specificed transform.
       function addARObjectAt(matrix) {
-        let newSphericalShell = sphericalshell.clone();
-        newSphericalShell.visible = true;
-        newSphericalShell.selectable = true;
-        // newSphericalShell.translation = translation;
-        newSphericalShell.matrix = matrix;
-        scene.addNode(newSphericalShell);
-        sphericalshells.push(newSphericalShell);
+        let sp = sphericalshell.clone();
+        sp.selectable = true;
+        sp.visible = true;
+        sp.matrix = matrix;
+        let gc = greencube.clone();
+        gc.selectable = true;
+        gc.visible = true;
+        gc.scale = [0.5, 0.5, 0.5];
+        gc.translation = [0, 1, 0];
+        sp.addNode(gc);
+        scene.addNode(sp);
+        scene.addNode(gc);
+        sphericalshells.push(sp);
 
         if (sphericalshells.length > MAX_OBJECTS) {
-          let oldSphericalShell = sphericalshells.shift();
-          scene.removeNode(oldSphericalShell);
+          let sp = sphericalshells.shift();
+          scene.removeNode(sp);
           reticle.visible = false;
         }
       }
