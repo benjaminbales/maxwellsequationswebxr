@@ -7,8 +7,8 @@ import ssl
 
 bind_to_address = ''
 server_port = 8080
-ssl_key_file = "/Users/benjaminbales/Documents/GoTeachMe/ProductDev/WebXR/server1.example.com.key"
-ssl_certificate_file = "/Users/benjaminbales/Documents/GoTeachMe/ProductDev/WebXR/server1.example.com.pem"
+ssl_key_file = "/mnt/c/users/Jordan/source/repos/server1.example.com.key"
+ssl_certificate_file = "/mnt/c/users/Jordan/source/repos/server1.example.com.pem"
  
  
 ## Don't modify anything below
