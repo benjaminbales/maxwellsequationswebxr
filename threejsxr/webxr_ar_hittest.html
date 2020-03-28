@@ -26,12 +26,11 @@
         var container;
         var camera, scene, renderer;
         var controller;
-        var transformControl;
+        // var transformControl;
         var mode = 0;
 
         var reticle;
         var sceneObjects = [];
-        // var MAX_OBJECTS = 5;
         var MAX_OBJECTS = 1;
         var raycaster, intersected = [];
 			  var tempMatrix = new THREE.Matrix4();
@@ -78,9 +77,6 @@
 
           document.body.appendChild( ARButton.createButton( renderer, { requiredFeatures: [ 'hit-test' ] } ) );
 
-          transformControl = new TransformControls( camera, renderer.domElement );
-          transformControl.addEventListener( 'change', render );
-
           controller = renderer.xr.getController(0);
 
           var lineGeometry = new THREE.BufferGeometry().setFromPoints( [ new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, - 1 ) ] );
@@ -92,58 +88,69 @@
           controller.add(line.clone());
 
           raycaster = new THREE.Raycaster();
-          
+          // var mouseDownEvent = { type: "mouseDown" };
+          // .dispatchEvent(mouseDownEvent)
           controller.addEventListener( 'selectstart', function ( event ) {
             if(!reticle.visible){
               var ctrlr = event.target;
+              var mouseDownEvent = new Event("mousedown", { bubbles: true, cancelable: false });
+              // ctrlr.dispatchEvent(mouseDownEvent);
+              renderer.domElement.dispatchEvent(mouseDownEvent);
+              console.log("selectstart event fired");
 
-              var intersections = getIntersections( ctrlr );
+              // var intersections = getIntersections( ctrlr );
 
-              if ( intersections.length > 0 ) {
+              // if ( intersections.length > 0 ) {
 
-                var intersection = intersections[ 0 ];
+              //   var intersection = intersections[ 0 ];
 
-                tempMatrix.getInverse( ctrlr.matrixWorld );
+              //   tempMatrix.getInverse( ctrlr.matrixWorld );
 
-                var object = intersection.object;
+              //   var object = intersection.object;
 
-                var modes = ["scale", "translate", "rotate"];
+              //   var modes = ["scale", "translate", "rotate"];
 
-                console.log("intersection.object is " + object);
+              //   console.log("intersection.object is " + object);
                 
-                // transformControl.attach( sphere );
-                transformControl.attach( object );
-                scene.add(transformControl);
-                transformControl.setMode(modes[++mode % 3]);
-                console.log("mode" + mode);
-                console.log("modes[mode % 3] " + modes[mode % 3]);
-                console.log("transformControl.getMode() " + transformControl.getMode());
+              //   // transformControl.setMode(modes[++mode % 3]);  
+              //   console.log("mode" + mode);
+              //   console.log("modes[mode % 3] " + modes[mode % 3]);
+              //   // console.log("transformControl.getMode() " + transformControl.getMode());
 
-                object.matrix.premultiply( tempMatrix );
-                object.matrix.decompose( object.position, object.quaternion, object.scale );
-                // object.material.emissive.b = 1;
-                ctrlr.add( object );
+              //   object.matrix.premultiply( tempMatrix );
+              //   object.matrix.decompose( object.position, object.quaternion, object.scale );
+              //   // object.material.emissive.b = 1;
+              //   // ctrlr.add( object );
+              //   // scene.remove(object);
 
-                ctrlr.userData.selected = object;
+              //   // ctrlr.userData.selected = object;
 
-              }
+              // }
             }
           });
 
           controller.addEventListener( 'selectend', function ( event ) {
             if(!reticle.visible){
               var ctrlr = event.target;
+              var mouseUpEvent = new Event("mouseup", { bubbles: true, cancelable: false });
+              // { type: "mouseup" , mode: "translate"};
+              // ctrlr.dispatchEvent(mouseUpEvent);
+              renderer.domElement.dispatchEvent(mouseUpEvent);
+              console.log("selectend event fired");
 
-              if ( ctrlr.userData.selected !== undefined ) {
+              // if ( ctrlr.userData.selected !== undefined ) {
 
-                var object = ctrlr.userData.selected;
-                object.matrix.premultiply( ctrlr.matrixWorld );
-                object.matrix.decompose( object.position, object.quaternion, object.scale );
-                // object.material.emissive.b = 0;
+              //   var object = ctrlr.userData.selected;
+              //   object.matrix.premultiply( ctrlr.matrixWorld );
+              //   object.matrix.decompose( object.position, object.quaternion, object.scale );
+              //   // object.material.emissive.b = 0;
 
-                ctrlr.userData.selected = undefined;
+              //   // ctrlr.remove(object);
+              //   // scene.add(object);
+              //   ctrlr.userData.selected = undefined;
+              // }
 
-              }
+              // cleanIntersected();
 
               // switch ( event.keyCode ) {
               //   case 17: // Ctrl
@@ -165,10 +172,21 @@
               // var sphereMaterial = new THREE.MeshPhongMaterial({color: 0xff0000});
               var sphereMaterial = new THREE.MeshBasicMaterial( { map: new THREE.TextureLoader().load( '../media/gltf/sphericalshell/hubble.png' ) } );
               var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+
               sphere.position.setFromMatrixPosition(reticle.matrix);
               sceneObjects.push(sphere);
-              sphere.name = "MySphere";
+              // sphere.name = "MySphere";
+
               scene.add(sphere);
+              
+              var transformControl = new TransformControls( camera, renderer.domElement );
+              transformControl.addEventListener( 'change', render );
+              transformControl.addEventListener('mouseDown', function(){
+                console.log("Hello world, mouseDown event fired on transformControl!");
+              });
+              transformControl.setMode("rotate");
+              transformControl.attach(sphere);
+              scene.add(transformControl);
 
               // //add spherical shell
               // var sphere = new THREE.Object3D();
@@ -294,9 +312,9 @@
 
         function render( timestamp, frame ) {
 
-          cleanIntersected();
+          // cleanIntersected();
 
-          intersectObjects(controller);
+          // intersectObjects(controller);
 
           if (frame) {
             var referenceSpace = renderer.xr.getReferenceSpace();
