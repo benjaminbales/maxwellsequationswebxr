@@ -20,7 +20,7 @@
         import { GLTFLoader } from '../js/third-party/three.js/examples/jsm/loaders/GLTFLoader.js';
         import { RoughnessMipmapper } from '../../three.js/examples/jsm/utils/RoughnessMipmapper.js';
         import { ARButton } from './ARButton.js';
-        import { TransformControls } from '../../three.js/examples/jsm/controls/TransformControls.js';
+        import { TransformControls } from './TransformControls.js';
         import { TimelinerController } from '../../three.js/examples/jsm/animation/TimelinerController.js';
 
         var container;
@@ -30,7 +30,8 @@
         var mode = 0;
 
         var reticle;
-        var sceneObjects = [];
+        var spheres = [];
+        var transformControls = [];
         var MAX_OBJECTS = 1;
         var raycaster, intersected = [];
 			  var tempMatrix = new THREE.Matrix4();
@@ -88,15 +89,17 @@
           controller.add(line.clone());
 
           raycaster = new THREE.Raycaster();
-          // var mouseDownEvent = { type: "mouseDown" };
-          // .dispatchEvent(mouseDownEvent)
-          controller.addEventListener( 'selectstart', function ( event ) {
-            if(!reticle.visible){
-              var ctrlr = event.target;
-              var mouseDownEvent = new Event("mousedown", { bubbles: true, cancelable: false });
-              // ctrlr.dispatchEvent(mouseDownEvent);
-              renderer.domElement.dispatchEvent(mouseDownEvent);
-              console.log("selectstart event fired");
+
+          // controller.addEventListener( 'selectstart', function ( event ) {
+            // if(!reticle.visible){
+              // var ctrlr = event.target;
+
+              // var mouseDownEvent = new Event("mousedown", { bubbles: true, cancelable: false });
+
+              //I don't think renderer.domElement responds to xr select events.  Only the controller does this. 
+              // renderer.domElement.dispatchEvent(mouseDownEvent);
+
+              // console.log("selectstart event fired");
 
               // var intersections = getIntersections( ctrlr );
 
@@ -108,45 +111,55 @@
 
               //   var object = intersection.object;
 
-              //   var modes = ["scale", "translate", "rotate"];
+                // var modes = ["off", "translate", "rotate", "scale"];
 
-              //   console.log("intersection.object is " + object);
-                
-              //   // transformControl.setMode(modes[++mode % 3]);  
-              //   console.log("mode" + mode);
-              //   console.log("modes[mode % 3] " + modes[mode % 3]);
-              //   // console.log("transformControl.getMode() " + transformControl.getMode());
+                // console.log("intersection.object is " + object);
 
-              //   object.matrix.premultiply( tempMatrix );
-              //   object.matrix.decompose( object.position, object.quaternion, object.scale );
-              //   // object.material.emissive.b = 1;
-              //   // ctrlr.add( object );
-              //   // scene.remove(object);
+                // for(let control of transformControls){
+                //   if(++mode % 4 > 0){
+                //     control.enabled = true;
+                //     control.setMode(modes[mode % 4]);
+                //   }else{
+                //     control.enabled = false;
+                //   }
+                // }
 
-              //   // ctrlr.userData.selected = object;
+                // console.log("mode" + mode);
+                // console.log("modes[mode % 3] " + modes[mode % 3]);
+                // console.log("transformControl.getMode() " + transformControl.getMode());
+
+                // object.matrix.premultiply( tempMatrix );
+
+                // object.matrix.decompose( object.position, object.quaternion, object.scale );
+
+                // ctrlr.add( object );
+
+                // scene.remove(object);
+
+                // ctrlr.userData.selected = object;
 
               // }
-            }
-          });
+            // }
+          // });
 
-          controller.addEventListener( 'selectend', function ( event ) {
-            if(!reticle.visible){
-              var ctrlr = event.target;
-              var mouseUpEvent = new Event("mouseup", { bubbles: true, cancelable: false });
-              // { type: "mouseup" , mode: "translate"};
-              // ctrlr.dispatchEvent(mouseUpEvent);
-              renderer.domElement.dispatchEvent(mouseUpEvent);
-              console.log("selectend event fired");
+          // controller.addEventListener( 'selectend', function ( event ) {
+          //   if(!reticle.visible){
+              // var ctrlr = event.target;
+
+              // var mouseUpEvent = new Event("mouseup", { bubbles: true, cancelable: false });
+
+              // renderer.domElement.dispatchEvent(mouseUpEvent);
+
+              // console.log("selectend event fired");
 
               // if ( ctrlr.userData.selected !== undefined ) {
 
               //   var object = ctrlr.userData.selected;
               //   object.matrix.premultiply( ctrlr.matrixWorld );
               //   object.matrix.decompose( object.position, object.quaternion, object.scale );
-              //   // object.material.emissive.b = 0;
 
-              //   // ctrlr.remove(object);
-              //   // scene.add(object);
+              //   ctrlr.remove(object);
+              //   scene.add(object);
               //   ctrlr.userData.selected = undefined;
               // }
 
@@ -158,8 +171,8 @@
               //     transformControl.setRotationSnap( null );
               //     break;
               // }
-            }
-          });
+            // }
+          // });
 
           controller.addEventListener('select', function ( event) {
             if (reticle.visible) {
@@ -174,32 +187,31 @@
               var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 
               sphere.position.setFromMatrixPosition(reticle.matrix);
-              sceneObjects.push(sphere);
-              // sphere.name = "MySphere";
+              sphere.name = "MySphere";
+              spheres.push(sphere);
 
               scene.add(sphere);
               
-              var transformControl = new TransformControls( camera, renderer.domElement );
+              var transformControl = new TransformControls( camera, renderer.domElement, controller);
               transformControl.addEventListener( 'change', render );
-              transformControl.addEventListener('mouseDown', function(){
-                console.log("Hello world, mouseDown event fired on transformControl!");
-              });
               transformControl.setMode("rotate");
               transformControl.attach(sphere);
+              transformControl.name = "MyTransformControl";
+              transformControls.push(transformControl);
               scene.add(transformControl);
 
               // //add spherical shell
               // var sphere = new THREE.Object3D();
               // sphere.copy(sphericalshell);
               // sphere.applyMatrix4(reticle.matrix);
-              // sceneObjects.push(sphere);
+              // spheres.push(sphere);
               // scene.add( sphere );
 
               //add sunflower
               // var snflwr = new THREE.Object3D();
               // snflwr.copy(sunflower);
               // snflwr.applyMatrix4(reticle.matrix);
-              // sceneObjects.push(snflwr);
+              // spheres.push(snflwr);
               // scene.add( snflwr );
 
               // //define probe axes
@@ -260,16 +272,11 @@
         }
 
         function getIntersections( ctrlr ) {
-
           tempMatrix.identity().extractRotation( ctrlr.matrixWorld );
-
           raycaster.ray.origin.setFromMatrixPosition( ctrlr.matrixWorld );
           raycaster.ray.direction.set( 0, 0, - 1 ).applyMatrix4( tempMatrix );
-          var intersections = [];
-          if(sceneObjects.length > 0){
-            intersections = raycaster.intersectObjects( sceneObjects);
-          }
-          return intersections;
+          // return raycaster.intersectObjects(spheres);
+          return raycaster.intersectObjects(scene.children);
         }
 
         function intersectObjects( ctrlr ) {
@@ -278,25 +285,21 @@
 
           if ( ctrlr.userData.selected !== undefined ) return;
 
-          var line = ctrlr.getObjectByName( 'line' );
+          // var line = ctrlr.getObjectByName( 'line' );
           var intersections = getIntersections( ctrlr );
 
           if ( intersections.length > 0 ) {
+            var intersection = intersections[0];
+            var object = intersection.object; 
+            // //benb
+            console.log("object.name " + object.name);
+            intersected.push(object);
 
-            var intersection = intersections[ 0 ];
-
-            var object = intersection.object;
-            // object.material.emissive.r = 1;
-            intersected.push( object );
-
-            line.scale.z = intersection.distance;
-
-          } else {
-
-            line.scale.z = 5;
-
-          }
-
+            // line.scale.z = intersection.distance;
+          } 
+          // else {
+          //   line.scale.z = 5;
+          // }
         }
 
         function cleanIntersected() {
@@ -304,7 +307,6 @@
           while ( intersected.length ) {
 
             var object = intersected.pop();
-            // object.material.emissive.r = 0;
 
           }
 
@@ -312,9 +314,9 @@
 
         function render( timestamp, frame ) {
 
-          // cleanIntersected();
+          cleanIntersected();
 
-          // intersectObjects(controller);
+          intersectObjects(controller);
 
           if (frame) {
             var referenceSpace = renderer.xr.getReferenceSpace();
@@ -338,7 +340,7 @@
             if (hitTestSource) {
               var hitTestResults = frame.getHitTestResults( hitTestSource );
 
-              if (hitTestResults.length && sceneObjects.length < MAX_OBJECTS) {
+              if (hitTestResults.length && spheres.length < MAX_OBJECTS) {
                 var hit = hitTestResults[0];
                 reticle.visible = true;
                 reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
