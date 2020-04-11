@@ -61,7 +61,7 @@ var TransformControls = function ( camera, domElement, controller) {
 	defineProperty( "rotationSnap", null );
 	defineProperty( "scaleSnap", null );
 	defineProperty( "space", "world" );
-	defineProperty( "size", 3 );
+	defineProperty( "size", 1 );
 	defineProperty( "dragging", false );
 	defineProperty( "showX", true );
 	defineProperty( "showY", true );
@@ -277,23 +277,23 @@ var TransformControls = function ( camera, domElement, controller) {
 
 		ray.setFromCamera( pointer, this.camera );
 		
-		console.log("ray is ");
-		console.log(ray);
+		// console.log("ray is ");
+		// console.log(ray);
 		
 		var intersect = ray.intersectObjects( _gizmo.picker[ this.mode ].children, true )[ 0 ] || false;
 		
-		console.log("intersect is ");
-		console.log(intersect);
-		console.log("this.mode is ");
-		console.log(this.mode);
-		console.log("_gizmo is ");
-		console.log(_gizmo);
+		// console.log("intersect is ");
+		// console.log(intersect);
+		// console.log("this.mode is ");
+		// console.log(this.mode);
+		// console.log("_gizmo is ");
+		// console.log(_gizmo);
 		
 		if ( intersect ) {
 
 			this.axis = intersect.object.name;
-			console.log("axis is ");
-			console.log(this.axis);
+			// console.log("axis is ");
+			// console.log(this.axis);
 
 		} else {
 
@@ -380,12 +380,12 @@ var TransformControls = function ( camera, domElement, controller) {
 		if ( object === undefined || axis === null || this.dragging === false || ( pointer.button !== undefined && pointer.button !== 0 ) ) return;
 
 		ray.setFromCamera( pointer, this.camera );
-		console.log("ray ");
-		console.log(ray);
+		// console.log("ray ");
+		// console.log(ray);
 
 		var planeIntersect = ray.intersectObjects( [ _plane ], true )[ 0 ] || false;
-		console.log("planeIntersect");
-		console.log(planeIntersect);
+		// console.log("planeIntersect");
+		// console.log(planeIntersect);
 		if ( planeIntersect === false ) return;
 
 		pointEnd.copy( planeIntersect.point ).sub( worldPositionStart );
@@ -551,8 +551,8 @@ var TransformControls = function ( camera, domElement, controller) {
 		} else if ( mode === 'rotate' ) {
 
 			offset.copy( pointEnd ).sub( pointStart );
-			console.log("offset");
-			console.log(offset);
+			// console.log("offset");
+			// console.log(offset);
 
 			var ROTATION_SPEED = 20 / worldPosition.distanceTo( _tempVector.setFromMatrixPosition( this.camera.matrixWorld ) );
 
@@ -611,7 +611,7 @@ var TransformControls = function ( camera, domElement, controller) {
 
 		this.dispatchEvent( changeEvent );
 		this.dispatchEvent( objectChangeEvent );
-		console.log("events dispatched");
+		// console.log("events dispatched");
 
 	};
 
